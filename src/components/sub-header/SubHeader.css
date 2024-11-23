@@ -1,0 +1,24 @@
+.sub-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 4rem;
+}
+
+.sub-header h1 {
+  text-transform: uppercase;
+  font-size: 3rem;
+  font-weight: 400;
+  letter-spacing: 3px;
+  border-top: 1px solid #252525;
+  border-bottom: 1px solid #252525;
+  padding: 2px;
+  text-align: center;
+}
+
+.sub-header p {
+  font-size: 1.5rem;
+  text-align: center;
+  line-height: 1.6;
+}

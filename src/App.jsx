@@ -1,26 +1,32 @@
-import { useState } from "react";
+import Footer from "./components/footer/Footer";
+import Header from "./components/header/Header";
+import OrderButton from "./components/order-button/OrderButton";
+import SubHeader from "./components/sub-header/SubHeader";
+import MenuList from "./components/menu-list/MenuList";
 
-function Message(props) {
-  return <h4>{props.content}</h4>;
-}
+import "./styles.css";
 
 export default function App() {
-  const [advice, setAdvice] = useState("");
-  const [adviceCount, setAdviceCount] = useState(0);
-
-  async function getAdvice() {
-    const response = await fetch("https://api.adviceslip.com/advice");
-    const json = await response.json();
-    setAdvice(json.slip.advice);
-    setAdviceCount((prev) => prev + 1);
-  }
-
   return (
-    <div className="App">
-      <h1>Hello world!</h1>
-      <button onClick={getAdvice}>Get Advice</button>
-      <Message content={advice ? advice : "No suggested advice!"} />
-      <p>You have read {adviceCount} peices of advices</p>
+    <div className="container">
+      <Header>
+        <h1>Fast react pizza co.</h1>
+      </Header>
+
+      <SubHeader>
+        <h1>Our menu</h1>
+        <p>
+          Authentic Italian cuisione. 6 creative dishes to choose from. All from
+          our stone oven, all organic, all delicious.
+        </p>
+      </SubHeader>
+
+      <MenuList />
+
+      <Footer>
+        <p>We're open until 22:00. Come visit us or order online.</p>
+        <OrderButton value="Order now" />
+      </Footer>
     </div>
   );
 }
