@@ -1,26 +1,46 @@
-import { useState } from "react";
-
-function Message(props) {
-  return <h4>{props.content}</h4>;
-}
+import './styles.css';
+import Container from './components/Container';
+import Steps from './components/Steps';
+import Message from './components/Message';
+import { useState } from 'react';
+import Buttons from './components/Buttons';
+import Button from "./components/Button";
 
 export default function App() {
-  const [advice, setAdvice] = useState("");
-  const [adviceCount, setAdviceCount] = useState(0);
 
-  async function getAdvice() {
-    const response = await fetch("https://api.adviceslip.com/advice");
-    const json = await response.json();
-    setAdvice(json.slip.advice);
-    setAdviceCount((prev) => prev + 1);
+  const messages = [
+    "Learn React ⚛️",
+    "Apply for jobs 💼",
+    "Invest your new income 🤑",
+  ];
+
+  const [activeMsg, setActiveMsg] = useState({
+    step: 0,
+    message: messages[0]
+  });
+
+  function onClickPrev() {
+    console.log("inside onClickPrev()")
+    const currStep = activeMsg.step
+    if (currStep > 0)
+      setActiveMsg({step: currStep - 1, message: messages[currStep - 1]})
+  }
+
+  function onClickNext() {
+    console.log("inside onClickNext()")
+    const currStep = activeMsg.step
+    if (currStep < messages.length - 1)
+      setActiveMsg({step: currStep + 1, message: messages[currStep + 1]})
   }
 
   return (
-    <div className="App">
-      <h1>Hello world!</h1>
-      <button onClick={getAdvice}>Get Advice</button>
-      <Message content={advice ? advice : "No suggested advice!"} />
-      <p>You have read {adviceCount} peices of advices</p>
-    </div>
+    <Container>
+      <Steps value={messages} active={activeMsg.step + 1} />
+      <Message value={activeMsg} />
+      <Buttons>
+        <Button text="previous" onClick={onClickPrev}/>
+        <Button text="next" onClick={onClickNext}/>
+      </Buttons>
+    </Container>
   );
 }
