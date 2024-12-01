@@ -18,6 +18,7 @@ export default function App() {
   ]);
 
   function addItem(item) {
+    item["id"] = Math.round(Math.random() * 10000) / 10000;
     setPackingList(curr => [...curr, item])
   }
 

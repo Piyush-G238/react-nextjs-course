@@ -1,6 +1,7 @@
 import Item from "./Item";
 
 export default function PackingList({list}) {
+    console.log(list)
     return (
         <div className="list">
             <h5>LIST</h5>
