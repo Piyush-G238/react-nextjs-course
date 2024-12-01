@@ -1,26 +1,32 @@
+import Logo from "./components/Logo"
+import Form from "./components/Form"
+import PackingList from "./components/PackingList";
+import Stats from "./components/Stats";
+
+import "./styles.css"
 import { useState } from "react";
 
-function Message(props) {
-  return <h4>{props.content}</h4>;
-}
-
 export default function App() {
-  const [advice, setAdvice] = useState("");
-  const [adviceCount, setAdviceCount] = useState(0);
+  
+  const [packingList, setPackingList] = useState([
+    {
+      id: 1,
+      description: "Passport",
+      quantity: 1,
+      packed: true
+    }
+  ]);
 
-  async function getAdvice() {
-    const response = await fetch("https://api.adviceslip.com/advice");
-    const json = await response.json();
-    setAdvice(json.slip.advice);
-    setAdviceCount((prev) => prev + 1);
+  function addItem(item) {
+    setPackingList(curr => [...curr, item])
   }
 
   return (
-    <div className="App">
-      <h1>Hello world!</h1>
-      <button onClick={getAdvice}>Get Advice</button>
-      <Message content={advice ? advice : "No suggested advice!"} />
-      <p>You have read {adviceCount} peices of advices</p>
+    <div className="app">
+      <Logo heading="far away"/>
+      <Form submitFn={addItem} />
+      <PackingList list={packingList}/>
+      <Stats />
     </div>
-  );
+  )
 }
