@@ -1,111 +1,81 @@
-import Logo from "./components/Logo"
-import Form from "./components/Form"
-import PackingList from "./components/PackingList";
-import Stats from "./components/Stats";
-
-import "./styles.css"
 import { useState } from "react";
+import BillInput from "./components/BillInput";
+import Feedbck from "./components/Feedback";
+
+const ratings = [
+  {
+    value: 0,
+    feedback: "Dissatisfied",
+  },
+  {
+    value: 5,
+    feedback: "It was okay!",
+  },
+  {
+    value: 10,
+    feedback: "It was good!",
+  },
+  {
+    value: 20,
+    feedback: "Absolutely Amazing!",
+  },
+];
 
 export default function App() {
+  const [amount, setAmount] = useState({
+    bill: 0,
+    myTip: 0,
+    myFriendTip: 0,
+    average: 0,
+  });
 
-  const [packingList, setPackingList] = useState([]);
-
-  const [stats, setStats] = useState({
-    total: 0,
-    packed: 0,
-    percent: 0
-  })
-
-  function addItem(item) {
-    const newLength = packingList.length + 1;
-    item["id"] = Math.round(Math.random() * 10000) / 10000;
-    setPackingList(curr => [...curr, item])
-    setStats(stat => {
-      return {
-        ...stat,
-        total: newLength,
-        percent: (stat.packed / newLength) * 100
-      }
-    })
+  function setBillAmount(amount) {
+    setAmount((currState) => {
+      return { ...currState, bill: amount };
+    });
   }
 
-  function changePackedStatus(id, status) {
-    console.log(id, status)
-    setPackingList(curr => {
-      const index = curr.findIndex(item => item.id == id)
-      if (index > -1) {
-        let newPacked
-        if (status) {
-          newPacked = stats.packed + 1
-        } else {
-          newPacked = stats.packed - 1
-        }
-        setStats(stat => {
-          return { 
-            ...stat, 
-            packed: newPacked, 
-            percent: (newPacked / stat.total) * 100 
-          }
-        })
-        curr[index].packed = status
-      }
+  function setMyTip(percent) {
+    const calculatedTip = (percent / 100) * amount.bill;
+    const calculatedAverge =
+      amount.myFriendTip > 0
+        ? (calculatedTip + amount.myFriendTip) / 2
+        : calculatedTip;
 
-      return [...curr]
-    })
+    setAmount((currState) => {
+      return { ...currState, myTip: calculatedTip, average: calculatedAverge };
+    });
   }
 
-  function removeItem(id) {
-    const newLength = packingList.length - 1
-    setPackingList(curr => curr.filter(item => item.id !== id))
-    setStats(stat => {
-      return {
-        ...stat, 
-        total: newLength, 
-        percent: newLength == 0 ? 0 : (stat.packed/newLength) * 100
-      }
-    })
-  }
+  function setMyFriendTip(percent) {
+    const calculatedTip = (percent / 100) * amount.bill;
+    const calculatedAverge =
+      amount.myTip > 0 ? (amount.myTip + calculatedTip) / 2 : calculatedTip;
 
-  function clearList() {
-    setPackingList([])
-    setStats({
-      total: 0,
-      packed: 0,
-      percent: 0
-    })
-  }
-
-  function sortItem(sortBy) {
-    setPackingList(curr => {
-      if (sortBy == "sortDescription") {
-
-        curr.sort((item1, item2) => {
-          return item1.description.toLowerCase().localeCompare(item2.description.toLowerCase())
-        })
-      }
-
-      else if (sortBy == "sortPacked") {
-
-        curr.sort((item1, item2) => {
-          return item2.packed - item1.packed
-        })
-      }
-
-      return [...curr]
-    })
-
-    // console.log(packingList.map(item => item.description))
+    setAmount((currState) => {
+      return { ...currState, myTip: calculatedTip, average: calculatedAverge };
+    });
   }
 
   return (
     <div className="app">
-      <Logo heading="far away" />
-      <Form submitFn={addItem} />
-      <PackingList list={packingList} changeFn={changePackedStatus} removeFn={removeItem} clearFn={clearList} sortFn={sortItem} />
-      <Stats
-        total={stats.total}
-        packed={stats.packed}
-        percent={stats.percent} />
+      <BillInput onChangeFn={setBillAmount} />
+      <Feedbck
+        ratings={ratings}
+        text="How did you like the service?"
+        onChangeFn={setMyTip}
+      />
+      <Feedbck
+        ratings={ratings}
+        text="How did your friend like the service?"
+        onChangeFn={setMyFriendTip}
+      />
+      {amount.bill > 0 && (
+        <h3>
+          You pay ${amount.bill + amount.average} (${amount.bill} + $
+          {amount.average} tip)
+        </h3>
+      )}
     </div>
-  )
+  );
 }
