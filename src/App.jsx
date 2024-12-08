@@ -1,26 +1,28 @@
 import { useState } from "react";
 
-function Message(props) {
-  return <h4>{props.content}</h4>;
-}
+import Header from "./components/features/Header";
+import Main from "./components/shared/Main";
+import MovieList from "./components/features/MovieList";
+
+import "./styles.css"
+
+import { MOVIE_DATA } from "./moviedata";
+import { WATCHED_DATA } from "./watcheddata";
+import WatchList from "./components/features/WatchList";
+import StarRating from "./components/shared/StarRating";
 
 export default function App() {
-  const [advice, setAdvice] = useState("");
-  const [adviceCount, setAdviceCount] = useState(0);
-
-  async function getAdvice() {
-    const response = await fetch("https://api.adviceslip.com/advice");
-    const json = await response.json();
-    setAdvice(json.slip.advice);
-    setAdviceCount((prev) => prev + 1);
-  }
+  const [movieList, setMovieList] = useState(MOVIE_DATA);
+  const [watchList, setWatchList] = useState(WATCHED_DATA);
 
   return (
     <div className="App">
-      <h1>Hello world!</h1>
-      <button onClick={getAdvice}>Get Advice</button>
-      <Message content={advice ? advice : "No suggested advice!"} />
-      <p>You have read {adviceCount} peices of advices</p>
+      <StarRating />
+      {/* <Header movieCount={movieList.length}/>
+      <Main>
+        <MovieList list={movieList} />
+        <WatchList list={watchList} />
+      </Main> */}
     </div>
   );
 }
